@@ -2,6 +2,7 @@ var ctx;
 var player;
 var enemies = [];
 
+
 function Tick() {
     Update();
     Draw();
