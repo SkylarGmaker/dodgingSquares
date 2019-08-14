@@ -28,6 +28,5 @@ Entity.prototype.Update = function () {
 
 Entity.prototype.Draw = function (Canvas) {
     Canvas.fillStyle = this.c;
-    ctx.clearRect(0, 0, c.width, c.height);
     Canvas.fillRect(this.x, this.y, this.w, this.h); 
 };
