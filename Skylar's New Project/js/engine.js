@@ -1,28 +1,17 @@
 var ctx;
 var player;
 var enemies = [];
-var keyPress = { };
 
 function Tick() {
     Update();
     Draw();
-};
+}
 
 function Update() {
     player.Update();
     for (var i = 0; i < enemies.length; i++) {
         enemies[i].Update();
     }
-};
-
-window.addEventListener('keydown', keyDownListener);
-function keyDownListener(event) {
-    keyPress[event.key] = true;
-}
-
-window.addEventListener('keyup', keyUpListener);
-function keyUpListener(event) {
-    keyPress[event.key] = false;
 }
 
 function Draw() {
@@ -30,20 +19,8 @@ function Draw() {
     player.Draw(ctx);
     for (var i = 0; i < enemies.length; i++) {
         enemies[i].Draw(ctx);
-    };
-        if (keyPress.w) {
-            player.y -= player.s;
-        } else if (keyPress.s) {
-            player.y += player.s;
-        }
-        if (keyPress.a) {
-            player.x -= player.s;
-        } else if (keyPress.d) {
-            player.x += player.s;
-        }
-    
-};
-
+    }
+}
 
 function StartEngine(CanvasId) {
     var canvas = document.getElementById("c");
@@ -51,6 +28,8 @@ function StartEngine(CanvasId) {
     ResizeCanvas();
     window.onresize = ResizeCanvas;
 
+    // Initialize KeyManager
+    KeyManager.Initialize();
 
     // Instantiate Player
     var player_width = 20;
@@ -62,24 +41,15 @@ function StartEngine(CanvasId) {
         player_height,
         3,
         "green",
-        null
+        null,
+        false
     );
     // For Testing Purposes - Insert 10 Random Enemies
     for (var i = 0; i < 10; i++) {
         InsertEnemy();
     }
     setInterval(Tick, 1000 / 60);
-};
-
-window.addEventListener('keydown', keyDownListener, false);
-function keyDownListener(event) {
-    keyPresses[event.key] = true;
 }
-
-window.addEventListener('keyup', keyUpListener, false);
-function keyUpListener(event) {
-    keyPresses[event.key] = false;
-};
 
 function ResizeCanvas() {
     ctx.canvas.width = window.innerWidth;
@@ -91,28 +61,31 @@ function GetRandomNumber(min, max) {
 }
 
 function InsertEnemy() {
-    var _direction = GetRandomNumber(1, 4);
-    var _width = GetRandomNumber(10, 30);
-    var _height = GetRandomNumber(10, 30);
-    var _speed = GetRandomNumber(1, 5);
+    var _direction = GetRandomNumber(1, 4); // Get a random direction
+    var _width = GetRandomNumber(10, 30); // Get a random width between 10 and 30 pixels
+    var _height = GetRandomNumber(10, 30); // Get a random height between 10 and 30 pixels
+    var _speed = GetRandomNumber(1, 5); // Get a random speed between 1 and 5 pixels (per tick)
     var _x, _y;
 
-    if (_direction == Direction.Up) {
+    // Based on which direction the enemy will be moving, we want to set the default x and y coordinates.
+    // For example, an enemy moving up needs to start off-screen at the very bottom.  The y-coordinate can be random though.
+    if (_direction === Direction.Up) {
         _y = ctx.canvas.height;
         _x = GetRandomNumber(1, ctx.canvas.width - _width);
     }
-    else if (_direction == Direction.Down) {
+    else if (_direction === Direction.Down) {
         _y = -_height;
         _x = GetRandomNumber(1, ctx.canvas.width - _width);
     }
-    else if (_direction == Direction.Left) {
+    else if (_direction === Direction.Left) {
         _x = ctx.canvas.width;
         _y = GetRandomNumber(1, ctx.canvas.height - _height);
     }
-    else if (_direction == Direction.Right) {
+    else if (_direction === Direction.Right) {
         _x = -_width;
         _y = GetRandomNumber(1, ctx.canvas.height - _height);
     }
 
-    enemies.push(new Entity(_x, _y, _width, _height, _speed, "red", _direction));
+    // 'Push' the new enemy into the enemies array.
+    enemies.push(new Entity(_x, _y, _width, _height, _speed, "red", _direction, true));
 }
