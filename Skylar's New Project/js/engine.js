@@ -1,6 +1,7 @@
 var ctx;
 var player;
 var enemies = [];
+var keyPress = { };
 
 function Tick() {
     Update();
@@ -14,12 +15,35 @@ function Update() {
     }
 };
 
+window.addEventListener('keydown', keyDownListener);
+function keyDownListener(event) {
+    keyPress[event.key] = true;
+}
+
+window.addEventListener('keyup', keyUpListener);
+function keyUpListener(event) {
+    keyPress[event.key] = false;
+}
+
 function Draw() {
+    ctx.clearRect(0, 0, c.width, c.height);
     player.Draw(ctx);
     for (var i = 0; i < enemies.length; i++) {
         enemies[i].Draw(ctx);
-    }
+    };
+        if (keyPress.w) {
+            player.y -= player.s;
+        } else if (keyPress.s) {
+            player.y += player.s;
+        }
+        if (keyPress.a) {
+            player.x -= player.s;
+        } else if (keyPress.d) {
+            player.x += player.s;
+        }
+    
 };
+
 
 function StartEngine(CanvasId) {
     var canvas = document.getElementById("c");
@@ -45,6 +69,16 @@ function StartEngine(CanvasId) {
         InsertEnemy();
     }
     setInterval(Tick, 1000 / 60);
+};
+
+window.addEventListener('keydown', keyDownListener, false);
+function keyDownListener(event) {
+    keyPresses[event.key] = true;
+}
+
+window.addEventListener('keyup', keyUpListener, false);
+function keyUpListener(event) {
+    keyPresses[event.key] = false;
 };
 
 function ResizeCanvas() {
