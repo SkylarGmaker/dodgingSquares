@@ -43,3 +43,23 @@ Entity.prototype.Draw = function (Canvas) {
     Canvas.fillStyle = this.c;
     Canvas.fillRect(this.x, this.y, this.w, this.h); 
 };
+
+Entity.prototype.GetVertices = function () {
+    return {
+        top: this.y,
+        right: this.x + this.w,
+        bottom: this.y + this.h,
+        left: this.x
+    };
+};
+
+Entity.prototype.Intersects = function (e) {
+    var v1 = this.GetVertices();
+    var v2 = e.GetVertices();
+
+    if (v1.left > v2.right || v2.left > v1.right)
+        return false;
+    if (v1.top > v2.bottom || v2.top > v1.bottom)
+        return false;
+    return true;
+}

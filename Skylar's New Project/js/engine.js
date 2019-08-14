@@ -1,7 +1,7 @@
 var ctx;
 var player;
 var enemies = [];
-
+var gameOver = false;
 
 function Tick() {
     Update();
@@ -9,17 +9,29 @@ function Tick() {
 }
 
 function Update() {
-    player.Update();
+    if (!gameOver)
+        player.Update();
+
     for (var i = 0; i < enemies.length; i++) {
         enemies[i].Update();
+        if (player.Intersects(enemies[i]))
+            gameOver = true;
     }
 }
 
 function Draw() {
     ctx.clearRect(0, 0, c.width, c.height);
+
     player.Draw(ctx);
     for (var i = 0; i < enemies.length; i++) {
         enemies[i].Draw(ctx);
+    }
+
+    if (gameOver) {
+        ctx.font = "40px Comic Sans MS";
+        ctx.fillStyle = "purple";
+        ctx.textAlign = "center";
+        ctx.fillText("Game Over!", ctx.canvas.width / 2, ctx.canvas.height / 2);
     }
 }
 
